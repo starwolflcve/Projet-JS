@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chiffre de César</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Chiffre de César</h1>
+            <p>Chiffrez et déchiffrez des messages avec le chiffre de César</p>
+        </header>
+
+        <main>
+            <section class="input-section">
+                <div class="form-group">
+                    <label for="message-input">Message :</label>
+                    <textarea id="message-input" placeholder="Entrez votre message ici..." rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="decalage-input">Décalage (1-25) :</label>
+                    <input type="number" id="decalage-input" min="1" max="25" value="3">
+                    <div id="decalage-error" class="error-message" style="display: none;"></div>
+                </div>
+
+                <div class="button-group">
+                    <button id="chiffre-btn" class="btn btn-primary">Chiffrer</button>
+                    <button id="dechiffre-btn" class="btn btn-secondary">Déchiffrer</button>
+                    <button id="force-brute-btn" class="btn btn-danger">Force Brute</button>
+                </div>
+            </section>
+
+            <section class="results-section">
+                <div id="resultat-chiffre" class="result-box" style="display: none;">
+                    <h3>Message chiffré :</h3>
+                    <p class="result-text"></p>
+                </div>
+
+                <div id="resultat-dechiffre" class="result-box" style="display: none;">
+                    <h3>Message déchiffré :</h3>
+                    <p class="result-text"></p>
+                </div>
+
+                <div id="tableau-resultats" class="table-container" style="display: none;">
+                    <h3>Résultats du déchiffrement par force brute :</h3>
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Décalage</th>
+                                <th>Message déchiffré</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableau-body">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 - Chiffre de César</p>
+        </footer>
+    </div>
+
+    <script src="js/cipher.js"></script>
+</body>
+</html>
