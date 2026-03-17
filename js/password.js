@@ -29,7 +29,7 @@ function calculateEntropy(password, hasLower=true, hasUpper, hasDigit, hasSymbol
     if (hasLower) charsetSize += 26;  // a-z
     if (hasUpper) charsetSize += 26;  // A-Z  
     if (hasDigit) charsetSize += 10;  // 0-9
-    if (hasSymbol) charsetSize += 32; // !@#$ etc. (estimation)
+    if (hasSymbol) charsetSize += 32; // !@#$ etc. 
   
     const log2 = Math.log2(charsetSize);
     return Math.round(password.length * log2);
