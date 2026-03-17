@@ -9,7 +9,7 @@ function analyzePassword(password) {
     for (const char of password) {
       if (char >= 'A' && char <= 'Z') hasUpper = true;
       if (char >= '0' && char <= '9') hasDigit = true;
-      if ((char < '0' || (char > '9' && char < 'A') || (char > 'Z' && char < 'a') || char > 'z')) hasSymbol = true;
+      if (/[^a-zA-Z0-9]/.test(char)) hasSymbol = true;
     }
     if (hasUpper) score += 15;
     if (hasDigit) score += 15;
