@@ -20,7 +20,19 @@ function analyzePassword(password) {
     if (!inBlacklist) score += 20;
   
     const strength = score < 50 ? 'rouge' : score < 75 ? 'orange' : 'vert';
+    const entropy = calculateEntropy(password, true, hasUpper, hasDigit, hasSymbol);
+    return { score, strength, length, hasUpper, hasDigit, hasSymbol, inBlacklist, entropy };
+}
+
+function calculateEntropy(password, hasLower=true, hasUpper, hasDigit, hasSymbol) {
+    let charsetSize = 0;
+    if (hasLower) charsetSize += 26;  // a-z
+    if (hasUpper) charsetSize += 26;  // A-Z  
+    if (hasDigit) charsetSize += 10;  // 0-9
+    if (hasSymbol) charsetSize += 32; // !@#$ etc. (estimation)
   
-    return { score, strength, length, hasUpper, hasDigit, hasSymbol, inBlacklist };
-  }
+    const log2 = Math.log2(charsetSize);
+    return Math.round(password.length * log2);
+}
+  
   
