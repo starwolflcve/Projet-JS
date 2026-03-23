@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veille Cybersécurité - CyberShield</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>News</h1>
+            <p>Actualités et alertes de sécurité en temps réel</p>
+            <a href="index.html" class="btn">← Retour Home</a>
+        </header>
+
+        <main>
+            <!-- Niveau d'alerte -->
+            <section class="alert-section">
+                <div id="alert-level" class="alert-box">
+                    <h2>Niveau d'alerte actuel</h2>
+                    <div class="alert-indicator">
+                        <span id="alert-status" class="alert-status">Chargement...</span>
+                        <div id="alert-bar" class="alert-bar"></div>
+                    </div>
+                    <p id="alert-description">Analyse des actualités en cours...</p>
+                </div>
+            </section>
+
+            <!-- Filtres -->
+            <section class="filters-section">
+                <div class="filter-controls">
+                    <label for="category-filter">Filtrer par catégorie :</label>
+                    <select id="category-filter" class="filter-select">
+                        <option value="all">Toutes les catégories</option>
+                        <option value="malware">Malware</option>
+                        <option value="vulnerability">Vulnérabilité</option>
+                        <option value="data-breach">Fuite de données</option>
+                        <option value="ransomware">Ransomware</option>
+                        <option value="phishing">Phishing</option>
+                        <option value="threat">Menace</option>
+                    </select>
+                    <button id="refresh-btn" class="btn btn-secondary">Actualiser</button>
+                </div>
+            </section>
+
+            <!-- Actualités -->
+            <section class="news-section">
+                <div id="loading" class="loading-message">
+                    <p>Chargement des actualités...</p>
+                </div>
+                
+                <div id="news-container" class="news-grid" style="display: none;">
+                    <!-- Les articles seront insérés ici dynamiquement -->
+                </div>
+
+                <div id="error-message" class="error-box" style="display: none;">
+                    <h3>Erreur de chargement</h3>
+                    <p id="error-text">Impossible de charger les actualités. Veuillez réessayer.</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 - CyberShield - Veille Cybersécurité</p>
+        </footer>
+    </div>
+
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>
