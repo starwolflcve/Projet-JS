@@ -17,7 +17,7 @@ function analyzePassword(password) {
   
     const lowerPwd = password.toLowerCase();
     const inBlacklist = passwordBlacklist.some(pwd => pwd === lowerPwd);
-    if (!inBlacklist) score += 20;
+    if (!inBlacklist && length > 8) score += 20;
   
     const strength = score < 50 ? 'rouge' : score < 75 ? 'orange' : 'vert';
     const entropy = calculateEntropy(password, true, hasUpper, hasDigit, hasSymbol);
@@ -35,4 +35,48 @@ function calculateEntropy(password, hasLower=true, hasUpper, hasDigit, hasSymbol
     return Math.round(password.length * log2);
 }
   
-  
+// Récupération des éléments du DOM
+const passwordInput = document.getElementById('password-input');
+const strengthBar   = document.getElementById('strength-bar');
+const strengthLabel = document.getElementById('strength-label');
+
+const lengthCritere    = document.getElementById('length-critere');
+const uppercaseCritere = document.getElementById('uppercase-critere');
+const digitCritere     = document.getElementById('digit-critere');
+const symbolCritere    = document.getElementById('symbol-critere');
+const blacklistCritere = document.getElementById('blacklist-critere');
+const entropyCritere   = document.getElementById('entropy-critere');
+
+// Écouteur sur le champ mot de passe
+passwordInput.addEventListener('input', () => {
+  const pwd = passwordInput.value;
+
+  const result = analyzePassword(pwd);
+  const {
+    score,
+    strength,
+    length,
+    hasUpper,
+    hasDigit,
+    hasSymbol,
+    inBlacklist,
+    entropy
+  } = result;
+
+  // Mise à jour de la barre de progression
+  const percent = Math.max(0, Math.min(100, score));
+  strengthBar.style.width = percent + '%';
+
+  if (strength === 'rouge') {
+    strengthBar.style.backgroundColor = '#ef4444';
+  } else if (strength === 'orange') {
+    strengthBar.style.backgroundColor = '#f97316';
+  } else {
+    strengthBar.style.backgroundColor = '#22c55e';
+  }
+
+  strengthLabel.textContent = `Score : ${score}`;
+
+  // Mise à jour du critère
+  entropyCritere.textContent   = `Entropie estimée : ${entropy} bits`;
+});
