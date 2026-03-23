@@ -4,6 +4,8 @@
     box-sizing: border-box;
 }
 
+/* --------- Fond général --------- */
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
@@ -11,6 +13,8 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
 }
+
+/* --------- Layout générique (password / cipher) --------- */
 
 .container {
     max-width: 800px;
@@ -45,6 +49,8 @@ main {
     padding: 30px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
+
+/* --------- Formulaires génériques --------- */
 
 .input-section {
     margin-bottom: 30px;
@@ -90,6 +96,8 @@ main {
     font-weight: 500;
 }
 
+/* --------- Boutons --------- */
+
 .button-group {
     display: flex;
     gap: 15px;
@@ -106,6 +114,9 @@ main {
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
 }
 
 .btn:hover {
@@ -143,6 +154,8 @@ main {
 .btn-danger:hover {
     background: linear-gradient(135deg, #d62c1a 0%, #a93226 100%);
 }
+
+/* --------- Résultats / tableaux --------- */
 
 .results-section {
     margin-top: 30px;
@@ -224,6 +237,8 @@ main {
     background: #f8f9fa;
 }
 
+/* --------- Footer générique --------- */
+
 footer {
     text-align: center;
     margin-top: 30px;
@@ -243,38 +258,40 @@ footer {
     }
 }
 
+/* --------- Responsive --------- */
+
 @media (max-width: 600px) {
     .container {
         padding: 10px;
     }
-    
+
     header h1 {
         font-size: 2rem;
     }
-    
+
     main {
         padding: 20px;
     }
-    
+
     .button-group {
         flex-direction: column;
     }
-    
+
     .btn {
         width: 100%;
     }
-    
+
     .results-table {
         font-size: 14px;
     }
-    
+
     .results-table th,
     .results-table td {
         padding: 10px;
     }
 }
 
-/* Page mot de passe, barre de progression */
+/* --------- Page mot de passe, barre de progression --------- */
 
 #strength-bar-wrapper {
   margin-top: 1rem;
@@ -307,4 +324,94 @@ footer {
   padding-left: 1.2rem;
   color: #9ca3af;
   font-size: .9rem;
+}
+
+/* ===================================================================
+   PAGE PHISHING – mise en page plus large mais cohérente avec ton style
+   =================================================================== */
+
+.phishing-module {
+    max-width: 1200px;
+    margin: 40px auto 60px;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1.5fr);
+    gap: 24px;
+}
+
+/* On réutilise .card mais dans ton thème clair */
+.card {
+    background: white;
+    border-radius: 15px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    border: 1px solid #e5e7eb;
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+}
+
+/* Labels + inputs spécifiques aux pages modules simples (sans .form-group) */
+
+.phishing-module label {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: #555;
+}
+
+.phishing-module input[type="email"],
+.phishing-module input[type="text"],
+.phishing-module textarea {
+    width: 100%;
+    margin-top: 6px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 2px solid #e1e5e9;
+    background: #f9fafb;
+    color: #111827;
+    font-size: 0.95rem;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.phishing-module input[type="email"]:focus,
+.phishing-module input[type="text"]:focus,
+.phishing-module textarea:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+.phishing-module textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Bouton phishing : utiliser .btn-primary pour rester cohérent */
+
+#analyze-email-btn {
+    margin-top: 8px;
+}
+
+#phishing-result p {
+    margin: 6px 0;
+}
+
+#phishing-result ul {
+    padding-left: 18px;
+    margin: 10px 0 0;
+}
+
+#phishing-result li {
+    margin-bottom: 4px;
+}
+
+/* Footer sur les modules pleine largeur (override léger) */
+
+.phishing-module + footer {
+    margin-top: 0;
 }
