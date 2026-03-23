@@ -415,3 +415,82 @@ footer {
 .phishing-module + footer {
     margin-top: 0;
 }
+
+/* ===== Modal rapport ===== */
+
+.report-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+  }
+  
+  .report-modal.open {
+    display: flex;
+  }
+  
+  .report-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+  }
+  
+  .report-modal-content {
+    position: relative;
+    background: #f9fafb;
+    border-radius: 16px;
+    padding: 20px 24px;
+    max-width: 700px;
+    width: 90%;
+    max-height: 80vh;
+    overflow: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+    z-index: 51;
+  }
+  
+  .report-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .report-modal-header h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: #111827;
+  }
+  
+  .report-close-btn {
+    border: none;
+    background: transparent;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #6b7280;
+  }
+  
+  .report-close-btn:hover {
+    color: #111827;
+  }
+  
+  .report-text {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1px solid #e5e7eb;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    color: #111827;
+  }
+  
+  .report-actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  

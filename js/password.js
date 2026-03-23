@@ -80,3 +80,52 @@ passwordInput.addEventListener('input', () => {
   // Mise à jour du critère
   entropyCritere.textContent   = `Entropie estimée : ${entropy} bits`;
 });
+
+// Écouteur sur le champ mot de passe
+passwordInput.addEventListener('input', () => {
+  const pwd = passwordInput.value;
+
+  const result = analyzePassword(pwd);
+  const {
+    score,
+    strength,
+    length,
+    hasUpper,
+    hasDigit,
+    hasSymbol,
+    inBlacklist,
+    entropy
+  } = result;
+
+  // Met à jour les données du rapport global
+  onPasswordAnalyzed(result);
+
+  // --- ton code existant de mise à jour UI ---
+  const percent = Math.max(0, Math.min(100, score));
+  strengthBar.style.width = percent + '%';
+
+  if (strength === 'rouge') {
+    strengthBar.style.backgroundColor = '#ef4444';
+  } else if (strength === 'orange') {
+    strengthBar.style.backgroundColor = '#f97316';
+  } else {
+    strengthBar.style.backgroundColor = '#22c55e';
+  }
+
+  strengthLabel.textContent = `Score : ${score}`;
+
+  entropyCritere.textContent = `Entropie estimée : ${entropy} bits`;
+  // (et le reste de tes critères si tu en as)
+});
+
+// Fonction ajoutée à la FIN du fichier
+function onPasswordAnalyzed(result) {
+  cyberReportData.lastPasswordAnalysis = {
+    score: result.score,
+    entropy: result.entropy,
+    strength: result.strength,
+    date: new Date().toISOString()
+  };
+  cyberReportData.lastUpdated = new Date().toISOString();
+}
+

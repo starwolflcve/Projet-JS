@@ -43,11 +43,42 @@
     </section>
   </main>
 
+    <section class="card">
+      <h2>Rapport de sécurité global</h2>
+      <p>Générez un rapport basé sur vos analyses et activités CyberShield.</p>
+      <button id="open-report-btn" class="btn btn-primary">Générer le rapport</button>
+    </section>
+  
+
   <footer>
     <p>© 2026 SecureNova – Projet CyberShield</p>
   </footer>
 
   <!-- Ton JS global -->
   <script src="../js/app.js"></script>
+  <!-- Modal Rapport de sécurité -->
+<div id="report-modal" class="report-modal">
+  <div class="report-modal-backdrop" id="report-backdrop"></div>
+  <div class="report-modal-content">
+    <header class="report-modal-header">
+      <h2>Rapport de sécurité CyberShield</h2>
+      <button id="close-report-btn" class="report-close-btn">&times;</button>
+    </header>
+
+    <pre id="report-content" class="report-text">
+Aucun rapport généré pour l'instant.
+    </pre>
+
+    <div class="report-actions">
+      <button id="export-report-btn" class="btn btn-secondary">Exporter en JSON</button>
+      <button id="print-report-btn" class="btn btn-primary">Imprimer</button>
+    </div>
+  </div>
+</div>
+
+<!-- JS global -->
+<script src="../js/report.js"></script>
+<script src="../js/app.js"></script>
+
 </body>
 </html>

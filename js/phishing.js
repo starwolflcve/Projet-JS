@@ -1,12 +1,11 @@
 function normalizeText(text) {
   return text
     .toLowerCase()
-    .normalize("NFD")              // sépare les accents
-    .replace(/[\u0300-\u036f]/g, "") // supprime les accents
-    .replace(/\s+/g, " ")          // espaces multiples → 1 espace
+    .normalize("NFD")                 // sépare les accents
+    .replace(/[\u0300-\u036f]/g, "")  // supprime les accents
+    .replace(/\s+/g, " ")             // espaces multiples → 1 espace
     .trim();
 }
-
 
 const phishingRules = {
   urgencyKeywords: [
@@ -16,13 +15,13 @@ const phishingRules = {
     "action requise",
     "compte suspendu",
     "verifiez maintenant",
-    "vite",
+    "vite"
   ],
   suspiciousDomains: [
     "paypa1.com",
     "amaz0n.fr",
     "arnazon.com",
-    "yah0O",
+    "yah0o.com",
     "noreply-security.tk",
     "micr0soft.com",
     "goog1e.com"
@@ -37,7 +36,7 @@ const phishingRules = {
     "code de carte bleue",
     "carte bleue",
     "payer pour proteger",
-    "payer pour proteger vos donnees"  // ← version sans accent
+    "payer pour proteger vos donnees"
   ],
   legitimateSenders: [
     "impots.gouv.fr",
@@ -45,7 +44,6 @@ const phishingRules = {
     "banque-france.fr"
   ]
 };
-
 
 function analyzeEmail(email) {
   let suspicionScore = 0;
@@ -56,7 +54,7 @@ function analyzeEmail(email) {
   const subjectNorm = normalizeText(subject);
   const bodyNorm = normalizeText(body);
   const contentNorm = subjectNorm + " " + bodyNorm;
-
+  const fromNorm = normalizeText(from);
 
   // 1. Mots d'urgence (some)
   if (
@@ -67,17 +65,17 @@ function analyzeEmail(email) {
     suspicionScore += 20;
     reasons.push("Urgence suspecte détectée");
   }
-  
 
   // 2. Domaines suspects (filter)
   const badDomains = phishingRules.suspiciousDomains.filter((domain) =>
-    from.includes(domain)
+    fromNorm.includes(domain)
   );
   suspicionScore += badDomains.length * 10;
   if (badDomains.length) {
     reasons.push(`Domaines suspects détectés : ${badDomains.join(", ")}`);
   }
 
+  // 3. Signaux rouges (filter)
   const flags = phishingRules.redFlags.filter((flag) =>
     contentNorm.includes(flag)
   );
@@ -110,7 +108,7 @@ function analyzeEmail(email) {
   };
 }
 
-// --- Intégration DOM ---
+// --- Intégration DOM + mise à jour du rapport ---
 
 function testPhishing() {
   const from = document.getElementById("email-from").value;
@@ -119,6 +117,11 @@ function testPhishing() {
 
   const email = { from, subject, body };
   const result = analyzeEmail(email);
+
+  // mise à jour du rapport global si report.js est chargé
+  if (typeof updatePhishingReport === "function") {
+    updatePhishingReport(result);
+  }
 
   const container = document.getElementById("phishing-result");
 
