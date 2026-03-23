@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>CyberShield – Détecteur de phishing</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <h1>CyberShield</h1>
+    <p>Détecteur d'e-mails de phishing</p>
+    <nav>
+      <a href="index.html">← Retour au dashboard</a>
+    </nav>
+  </header>
+
+  <main class="phishing-module">
+    <section class="card">
+      <h2>Analyser un e-mail</h2>
+
+      <label>
+        Expéditeur (from) :
+        <input id="email-from" type="email" placeholder="ex: alert@paypa1.com">
+      </label>
+
+      <label>
+        Sujet :
+        <input id="email-subject" type="text" placeholder="ex: URGENT : votre compte expire">
+      </label>
+
+      <label>
+        Corps du message :
+        <textarea id="email-body" rows="6" placeholder="Texte de l'email..."></textarea>
+      </label>
+
+      <button id="analyze-email-btn" class="btn">Analyser l'email</button>
+    </section>
+
+    <section class="card">
+      <h2>Résultat de l'analyse</h2>
+      <div id="phishing-result">
+        <p>Aucun e-mail analysé pour l'instant.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 SecureNova – Projet CyberShield</p>
+  </footer>
+
+  <!-- JS du module phishing -->
+  <script src="../js/phishing.js"></script>
+</body>
+</html>
