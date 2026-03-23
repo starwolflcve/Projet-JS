@@ -19,16 +19,27 @@
             <!-- Filtres -->
             <section class="filters-section">
                 <div class="filter-controls">
-                    <label for="category-filter">Filtrer par catégorie :</label>
-                    <select id="category-filter" class="filter-select">
-                        <option value="all">Toutes les catégories</option>
-                        <option value="malware">Malware</option>
-                        <option value="vulnerability">Vulnérabilité</option>
-                        <option value="data-breach">Fuite de données</option>
-                        <option value="ransomware">Ransomware</option>
-                        <option value="phishing">Phishing</option>
-                        <option value="threat">Menace</option>
-                    </select>
+                    <div class="filter-group">
+                        <label for="category-filter">Filtrer par catégorie :</label>
+                        <select id="category-filter" class="filter-select">
+                            <option value="all">Toutes les catégories</option>
+                            <option value="malware">Malware</option>
+                            <option value="vulnerability">Vulnérabilité</option>
+                            <option value="data-breach">Fuite de données</option>
+                            <option value="ransomware">Ransomware</option>
+                            <option value="phishing">Phishing</option>
+                            <option value="threat">Menace</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="search-input">Rechercher :</label>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="search-input" placeholder="Titre, résumé, source...">
+                        </div>
+                    </div>
+                    
                     <button id="refresh-btn" class="btn btn-secondary">Actualiser</button>
                 </div>
             </section>
@@ -51,7 +62,7 @@
         </main>
 
         <footer>
-            <p>&copy; 2026 - CyberShield - Veille Cybersécurité</p>
+            <p>&copy; 2026 - CyberShield - CyberShield News</p>
         </footer>
     </div>
 

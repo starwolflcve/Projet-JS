@@ -3,6 +3,8 @@ class CyberSecurityDashboard {
         this.newsData = [];
         this.filteredNews = [];
         this.apiKey = 'demo-key'; // Clé de démonstration pour NewsAPI
+        this.storageKey = 'cybershield_news';
+        this.lastVisitKey = 'cybershield_last_visit';
         this.initEventListeners();
         this.loadNews();
     }
@@ -10,6 +12,7 @@ class CyberSecurityDashboard {
     initEventListeners() {
         const categoryFilter = document.getElementById('category-filter');
         const refreshBtn = document.getElementById('refresh-btn');
+        const searchInput = document.getElementById('search-input');
 
         if (categoryFilter) {
             categoryFilter.addEventListener('change', () => this.filterNews());
@@ -17,6 +20,10 @@ class CyberSecurityDashboard {
 
         if (refreshBtn) {
             refreshBtn.addEventListener('click', () => this.loadNews());
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => this.searchNews(e.target.value));
         }
     }
 
@@ -33,9 +40,14 @@ class CyberSecurityDashboard {
             // Simulation d'appel API (remplacer par vrai appel API)
             await this.simulateAPICall();
             
+            // Marquer les nouveaux articles
+            this.markNewArticles();
+            
+            // Sauvegarder dans localStorage
+            this.saveToLocalStorage();
+            
             this.filteredNews = [...this.newsData];
             this.displayNews();
-            this.calculateAlertLevel();
             
         } catch (error) {
             console.error('Erreur lors du chargement des actualités:', error);
@@ -43,6 +55,65 @@ class CyberSecurityDashboard {
         } finally {
             loadingElement.style.display = 'none';
         }
+    }
+
+    markNewArticles() {
+        const lastVisit = localStorage.getItem(this.lastVisitKey);
+        const currentTime = new Date().toISOString();
+        
+        if (!lastVisit) {
+            // Première visite, tous les articles sont nouveaux
+            this.newsData.forEach(article => {
+                article.isNew = true;
+            });
+        } else {
+            // Marquer les articles plus récents que la dernière visite
+            const lastVisitDate = new Date(lastVisit);
+            this.newsData.forEach(article => {
+                const articleDate = new Date(article.date);
+                article.isNew = articleDate > lastVisitDate;
+            });
+        }
+        
+        // Mettre à jour la date de dernière visite
+        localStorage.setItem(this.lastVisitKey, currentTime);
+    }
+
+    saveToLocalStorage() {
+        try {
+            localStorage.setItem(this.storageKey, JSON.stringify(this.newsData));
+        } catch (error) {
+            console.warn('Impossible de sauvegarder dans localStorage:', error);
+        }
+    }
+
+    loadFromLocalStorage() {
+        try {
+            const saved = localStorage.getItem(this.storageKey);
+            if (saved) {
+                return JSON.parse(saved);
+            }
+        } catch (error) {
+            console.warn('Impossible de charger depuis localStorage:', error);
+        }
+        return null;
+    }
+
+    searchNews(query) {
+        const searchQuery = query.toLowerCase().trim();
+        
+        if (!searchQuery) {
+            this.filteredNews = [...this.newsData];
+        } else {
+            this.filteredNews = this.newsData.filter(article => {
+                return article.title.toLowerCase().includes(searchQuery) ||
+                       article.summary.toLowerCase().includes(searchQuery) ||
+                       article.source.toLowerCase().includes(searchQuery) ||
+                       this.getCategoryLabel(article.category).toLowerCase().includes(searchQuery);
+            });
+        }
+        
+        this.displayNews();
     }
 
     async simulateAPICall() {
@@ -188,7 +259,13 @@ class CyberSecurityDashboard {
             this.filteredNews = this.newsData.filter(article => article.category === selectedCategory);
         }
         
-        this.displayNews();
+        // Appliquer aussi la recherche si elle est active
+        const searchInput = document.getElementById('search-input');
+        if (searchInput && searchInput.value.trim()) {
+            this.searchNews(searchInput.value);
+        } else {
+            this.displayNews();
+        }
     }
 
     displayNews() {
@@ -219,6 +296,7 @@ class CyberSecurityDashboard {
             <div class="article-header">
                 <span class="article-category">${this.getCategoryLabel(article.category)}</span>
                 <span class="article-severity ${article.severity}">${this.getSeverityLabel(article.severity)}</span>
+                ${article.isNew ? '<span class="new-badge">Nouveau</span>' : ''}
             </div>
             <h3 class="article-title">${article.title}</h3>
             <p class="article-summary">${article.summary}</p>
