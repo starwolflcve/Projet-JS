@@ -1,25 +1,43 @@
+function normalizeText(text) {
+  return text
+    .toLowerCase()
+    .normalize("NFD")              // sépare les accents
+    .replace(/[\u0300-\u036f]/g, "") // supprime les accents
+    .replace(/\s+/g, " ")          // espaces multiples → 1 espace
+    .trim();
+}
+
+
 const phishingRules = {
   urgencyKeywords: [
     "urgent",
-    "immédiatement",
+    "immediatement",
     "expire dans",
     "action requise",
     "compte suspendu",
-    "vérifiez maintenant"
+    "verifiez maintenant",
+    "vite",
   ],
   suspiciousDomains: [
     "paypa1.com",
     "amaz0n.fr",
+    "arnazon.com",
+    "yah0O",
     "noreply-security.tk",
     "micr0soft.com",
     "goog1e.com"
   ],
   redFlags: [
     "cliquez ici",
-    "connexion sécurisée",
-    "mot de passe expiré",
-    "vous avez gagné",
-    "félicitations"
+    "cliquez sur ce lien",
+    "connexion securisee",
+    "mot de passe expire",
+    "vous avez gagne",
+    "felicitations",
+    "code de carte bleue",
+    "carte bleue",
+    "payer pour proteger",
+    "payer pour proteger vos donnees"  // ← version sans accent
   ],
   legitimateSenders: [
     "impots.gouv.fr",
@@ -28,23 +46,28 @@ const phishingRules = {
   ]
 };
 
+
 function analyzeEmail(email) {
   let suspicionScore = 0;
   const reasons = [];
 
   const { subject, body, from } = email;
-  const subjectLower = subject.toLowerCase();
-  const bodyLower = body.toLowerCase();
+
+  const subjectNorm = normalizeText(subject);
+  const bodyNorm = normalizeText(body);
+  const contentNorm = subjectNorm + " " + bodyNorm;
+
 
   // 1. Mots d'urgence (some)
   if (
     phishingRules.urgencyKeywords.some(
-      (word) => subjectLower.includes(word) || bodyLower.includes(word)
+      (word) => contentNorm.includes(word)
     )
   ) {
     suspicionScore += 20;
     reasons.push("Urgence suspecte détectée");
   }
+  
 
   // 2. Domaines suspects (filter)
   const badDomains = phishingRules.suspiciousDomains.filter((domain) =>
@@ -55,11 +78,10 @@ function analyzeEmail(email) {
     reasons.push(`Domaines suspects détectés : ${badDomains.join(", ")}`);
   }
 
-  // 3. Signaux rouges dans le contenu (filter)
   const flags = phishingRules.redFlags.filter((flag) =>
-    (subjectLower + bodyLower).includes(flag)
+    contentNorm.includes(flag)
   );
-  suspicionScore += flags.length * 15;
+  suspicionScore += flags.length * 20;
   if (flags.length) {
     reasons.push(`Signaux rouges trouvés : ${flags.slice(0, 3).join(", ")}`);
   }
