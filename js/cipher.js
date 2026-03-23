@@ -178,6 +178,170 @@ class CaesarChiffrement {
     }
 }
 
+class VigenereCipher {
+    constructor() {
+        this.alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        this.initEventListeners();
+    }
+
+    getShifts(key) {
+        return key.toUpperCase().split('').map(char => {
+            const index = this.alphabet.indexOf(char);
+            if (index === -1) {
+                throw new Error(`La clé ne doit contenir que des lettres : ${char}`);
+            }
+            return index;
+        });
+    }
+
+    chiffrement(message, key) {
+        if (!key || key.trim() === '') {
+            throw new Error('La clé ne peut pas être vide');
+        }
+
+        const shifts = this.getShifts(key);
+        const messageUpper = message.toUpperCase();
+        let result = '';
+        let keyIndex = 0;
+
+        for (let i = 0; i < messageUpper.length; i++) {
+            const char = messageUpper[i];
+            const charIndex = this.alphabet.indexOf(char);
+            
+            if (charIndex === -1) {
+                result += char;
+                continue;
+            }
+
+            const shift = shifts[keyIndex % shifts.length];
+            const newIndex = (charIndex + shift) % 26;
+            result += this.alphabet[newIndex];
+            keyIndex++;
+        }
+
+        return result;
+    }
+
+    dechiffrement(messageChiffre, key) {
+        if (!key || key.trim() === '') {
+            throw new Error('La clé ne peut pas être vide');
+        }
+
+        const shifts = this.getShifts(key);
+        const messageUpper = messageChiffre.toUpperCase();
+        let result = '';
+        let keyIndex = 0;
+
+        for (let i = 0; i < messageUpper.length; i++) {
+            const char = messageUpper[i];
+            const charIndex = this.alphabet.indexOf(char);
+            
+            if (charIndex === -1) {
+                result += char;
+                continue;
+            }
+
+            const shift = shifts[keyIndex % shifts.length];
+            const newIndex = (charIndex - shift + 26) % 26;
+            result += this.alphabet[newIndex];
+            keyIndex++;
+        }
+
+        return result;
+    }
+
+    initEventListeners() {
+        const vigenereChiffreBtn = document.getElementById('vigenere-chiffre-btn');
+        const vigenereDechiffreBtn = document.getElementById('vigenere-dechiffre-btn');
+        const messageInput = document.getElementById('vigenere-message-input');
+        const keyInput = document.getElementById('vigenere-key-input');
+
+        if (vigenereChiffreBtn) {
+            vigenereChiffreBtn.addEventListener('click', () => this.handleChiffrement());
+        }
+
+        if (vigenereDechiffreBtn) {
+            vigenereDechiffreBtn.addEventListener('click', () => this.handleDechiffrement());
+        }
+
+        if (keyInput) {
+            keyInput.addEventListener('input', () => this.validateKey());
+        }
+    }
+
+    validateKey() {
+        const keyInput = document.getElementById('vigenere-key-input');
+        const errorElement = document.getElementById('vigenere-key-error');
+        const value = keyInput.value.trim();
+
+        if (!value || !/^[A-Za-z]+$/.test(value)) {
+            if (errorElement) {
+                errorElement.textContent = 'La clé doit contenir uniquement des lettres';
+                errorElement.style.display = 'block';
+            }
+            return false;
+        } else {
+            if (errorElement) {
+                errorElement.style.display = 'none';
+            }
+            return true;
+        }
+    }
+
+    handleChiffrement() {
+        const messageInput = document.getElementById('vigenere-message-input');
+        const keyInput = document.getElementById('vigenere-key-input');
+        const resultatElement = document.getElementById('resultat-vigenere-chiffre');
+
+        if (!this.validateKey()) {
+            return;
+        }
+
+        const message = messageInput.value.trim();
+        const key = keyInput.value.trim();
+
+        if (!message) {
+            alert('Veuillez saisir un message');
+            return;
+        }
+
+        try {
+            const messageChiffre = this.chiffrement(message, key);
+            resultatElement.textContent = messageChiffre;
+            resultatElement.style.display = 'block';
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    handleDechiffrement() {
+        const messageInput = document.getElementById('vigenere-message-input');
+        const keyInput = document.getElementById('vigenere-key-input');
+        const resultatElement = document.getElementById('resultat-vigenere-dechiffre');
+
+        if (!this.validateKey()) {
+            return;
+        }
+
+        const message = messageInput.value.trim();
+        const key = keyInput.value.trim();
+
+        if (!message) {
+            alert('Veuillez saisir un message');
+            return;
+        }
+
+        try {
+            const messageDechiffre = this.dechiffrement(message, key);
+            resultatElement.textContent = messageDechiffre;
+            resultatElement.style.display = 'block';
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     new CaesarChiffrement();
+    new VigenereCipher();
 });
