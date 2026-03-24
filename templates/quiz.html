@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Quiz Cybersécurité</title>
+
+    <!-- Lien vers ton CSS existant -->
+    <link rel="stylesheet" href="../css/style.css" />
+</head>
+	<body>
+		<div class="container">
+			<header>
+				<h1>Portail cybersécurité</h1>
+				<p>Outils de sensibilisation pour les collaborateurs</p>
+			</header>
+
+			<main>
+				<section id="config" class="input-section">
+					<div class="form-group">
+						<label for="difficultySelect">Niveau du quiz :</label>
+						<select id="difficultySelect">
+							<option value="">Tous</option>
+							<option value="easy">Facile</option>
+							<option value="medium">Intermédiaire</option>
+							<option value="hard">Avancé</option>
+						</select>
+					</div>
+					<button id="startBtn" class="btn btn-primary">Lancer le quiz</button>
+				</section>
+
+				<section id="quiz" class="card" style="display:none;">
+					<div class="quiz-header">
+						<h2>Quiz cybersécurité</h2>
+						<p>10 questions aléatoires, timer, streak et score.</p>
+					</div>
+					<div id="timer" class="timer"></div>
+					<div id="question"></div>
+					<div id="answers"></div>
+					<div id="feedback"></div>
+					<button id="nextBtn" class="btn btn-secondary" disabled>Question suivante</button>
+				</section>
+
+				<section id="results" class="card" style="display:none;"></section>
+			</main>
+
+			<footer>
+				© 2026 – Portail cybersécurité
+			</footer>
+			<script src="../js/quiz-data.js"></script>
+		</div>
+	</body>
+</html>

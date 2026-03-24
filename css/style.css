@@ -493,4 +493,87 @@ footer {
     gap: 10px;
     justify-content: flex-end;
   }
-  
+
+/* ================================
+   Quiz cybersécurité – styles
+   ================================ */
+
+.quiz-header {
+    margin-bottom: 20px;
+}
+
+.quiz-header h2 {
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.quiz-header p {
+    font-size: 0.95rem;
+    color: #666;
+}
+
+/* Zone question + réponses dans une card existante */
+#quiz.card {
+    margin-top: 20px;
+}
+
+/* Question */
+#question {
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+/* Liste de réponses sous forme de boutons */
+#answers {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.answer-btn {
+    text-align: left;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.answer-btn:hover:enabled {
+    background: #e5edff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    transform: translateY(-1px);
+}
+
+.answer-btn:disabled {
+    cursor: default;
+}
+
+/* Timer */
+.timer {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4b5563;
+    margin-bottom: 8px;
+}
+
+/* Feedback texte sous la question */
+#feedback p {
+    margin: 4px 0;
+    font-size: 0.9rem;
+}
+
+/* Résultats fin de quiz (section déjà existante .card réutilisée) */
+#results h2 {
+    margin-bottom: 10px;
+}
+
+#results h3 {
+    margin-top: 18px;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
