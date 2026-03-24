@@ -2,14 +2,287 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>CyberShield – Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberShield – Interface unifiée</title>
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <header>
-    <h1>CyberShield</h1>
-    <p>Tableau de bord de sensibilisation à la cybersécurité</p>
+  <header class="app-header">
+    <div class="app-header-inner">
+      <div class="app-header-title">
+        <h1>CyberShield</h1>
+        <p></p>
+      </div>
+      <div class="header-actions">
+        <button id="open-report-btn" class="btn btn-primary">Générer le rapport</button>
+      </div>
+    </div>
+
+    <nav class="tab-bar" role="tablist" aria-label="Navigation des modules CyberShield">
+      <button class="tab-btn active" role="tab" aria-selected="true" data-tab="home">Home</button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="password">Mot de passe</button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="phishing">Phishing</button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="cipher">Chiffrement</button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="quiz">Quiz</button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="news">CyberShield News</button>
+    </nav>
   </header>
+
+  <main class="app-main">
+    <!-- ===================== HOME ===================== -->
+    <section class="tab-panel active" data-tab-panel="home">
+      <h2 class="panel-title">Tableau de bord global</h2>
+
+      <div class="home-grid">
+        <div class="home-card">
+          <h3>Quiz</h3>
+          <div class="home-metric" id="home-quiz-average">—</div>
+          <div class="home-sub" id="home-quiz-sub">Aucune tentative enregistrée</div>
+        </div>
+
+        <div class="home-card">
+          <h3>Robustesse (dernier mot de passe)</h3>
+          <div class="home-metric" id="home-password-robustness">—</div>
+          <div class="home-sub" id="home-password-sub">—</div>
+        </div>
+
+        <div class="home-card">
+          <h3>Phishing</h3>
+          <div class="home-metric" id="home-phishing-rate">—</div>
+          <div class="home-sub" id="home-phishing-sub">—</div>
+        </div>
+
+        <div class="home-card">
+          <h3>Actualites (cache)</h3>
+          <div class="home-sub" id="home-news-updated">—</div>
+          <div class="home-news-list" id="home-news-list"></div>
+        </div>
+      </div>
+
+      <div class="home-actions">
+        <button class="btn btn-secondary" data-tab-nav="quiz" type="button">Continuer le quiz</button>
+        <button class="btn btn-primary" data-tab-nav="password" type="button">Analyser un mot de passe</button>
+      </div>
+    </section>
+
+    <!-- ================== MOT DE PASSE ================= -->
+    <section class="tab-panel" data-tab-panel="password">
+      <div class="card module-card" style="max-width: 700px;">
+        <h2>Testez votre mot de passe</h2>
+        <label for="password-input">Mot de passe a analyser</label>
+        <input
+          type="password"
+          id="password-input"
+          placeholder="Tapez votre mot de passe..."
+          autocomplete="off"
+        >
+
+        <div id="strength-bar-wrapper">
+          <div id="strength-bar"></div>
+        </div>
+        <p id="strength-label">Score : 0</p>
+        <p class="help-text">Pour information, un bon mot de passe a une moyenne de 80 de score.</p>
+
+        <ul id="password-details">
+          <li id="entropy-critere">Entropie estimée : 0 bits</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ====================== PHISHING ===================== -->
+    <section class="tab-panel" data-tab-panel="phishing">
+      <div class="phishing-module">
+        <section class="card">
+          <h2>Analyser un e-mail</h2>
+
+          <label>
+            Expediteur (from) :
+            <input id="email-from" type="email" placeholder="ex: alert@paypa1.com">
+          </label>
+
+          <label>
+            Sujet :
+            <input id="email-subject" type="text" placeholder="ex: URGENT : votre compte expire">
+          </label>
+
+          <label>
+            Corps du message :
+            <textarea id="email-body" rows="6" placeholder="Texte de l'email..."></textarea>
+          </label>
+
+          <button id="analyze-email-btn" class="btn" type="button">Analyser l'email</button>
+        </section>
+
+        <section class="card">
+          <h2>Résultat de l'analyse</h2>
+          <div id="phishing-result">
+            <p>Aucun e-mail analysé pour l'instant.</p>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ====================== CHIFFREMENT ================= -->
+    <section class="tab-panel" data-tab-panel="cipher">
+      <div class="container-lite">
+        <h2 class="panel-title">Chiffres de César et Vigenère</h2>
+
+        <div class="card module-card">
+          <h3>Chiffre de César</h3>
+
+          <div class="form-group">
+            <label for="message-input">Message :</label>
+            <textarea id="message-input" placeholder="Entrez votre message ici..." rows="4"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="decalage-input">Décalage (1-25) :</label>
+            <input type="number" id="decalage-input" min="1" max="25" value="3">
+            <div id="decalage-error" class="error-message" style="display:none;"></div>
+          </div>
+
+          <div class="button-group">
+            <button id="chiffre-btn" class="btn btn-primary" type="button">Chiffrer</button>
+            <button id="dechiffre-btn" class="btn btn-secondary" type="button">Déchiffrer</button>
+            <button id="force-brute-btn" class="btn btn-danger" type="button">Force Brute</button>
+          </div>
+
+          <div class="results-section">
+            <div id="resultat-chiffre" class="result-box" style="display:none;">
+              <h3>Message chiffré :</h3>
+              <p class="result-text"></p>
+            </div>
+
+            <div id="resultat-dechiffre" class="result-box" style="display:none;">
+              <h3>Message déchiffré :</h3>
+              <p class="result-text"></p>
+            </div>
+
+            <div id="tableau-resultats" class="table-container" style="display:none;">
+              <h3>Résultats du déchiffrement par force brute :</h3>
+              <table class="results-table">
+                <thead>
+                  <tr>
+                    <th>Décalage</th>
+                    <th>Message déchiffré</th>
+                  </tr>
+                </thead>
+                <tbody id="tableau-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card module-card">
+          <h3>Chiffre de Vigenère</h3>
+
+          <div class="form-group">
+            <label for="vigenere-message-input">Message :</label>
+            <textarea id="vigenere-message-input" placeholder="Entrez votre message ici..." rows="4"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="vigenere-key-input">Clé (lettres uniquement) :</label>
+            <input type="text" id="vigenere-key-input" placeholder="Ex: KEY" value="KEY">
+            <div id="vigenere-key-error" class="error-message" style="display:none;"></div>
+            <small>Exemple : clé 'KEY' -> décalages...</small>
+          </div>
+
+          <div class="button-group">
+            <button id="vigenere-chiffre-btn" class="btn btn-primary" type="button">Chiffrer</button>
+            <button id="vigenere-dechiffre-btn" class="btn btn-secondary" type="button">Déchiffrer</button>
+          </div>
+
+          <div class="results-section">
+            <div id="resultat-vigenere-chiffre" class="result-box" style="display:none;">
+              <h3>Message chiffré :</h3>
+              <p class="result-text"></p>
+            </div>
+
+            <div id="resultat-vigenere-dechiffre" class="result-box" style="display:none;">
+              <h3>Message déchiffré :</h3>
+              <p class="result-text"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== QUIZ ===================== -->
+    <section class="tab-panel" data-tab-panel="quiz">
+      <div class="card module-card quiz-module">
+        <h2>Quiz de sensibilisation</h2>
+        <p class="help-text">Répondez aux questions pour évaluer vos connaissances en sécurité opérationnelle.</p>
+
+        <div id="quiz-start-area">
+          <button id="quiz-start-btn" class="btn btn-primary" type="button">Démarrer le quiz</button>
+          <div class="quiz-hint" id="quiz-hint">Le score est stocké localement (aucune donnée envoyée).</div>
+        </div>
+
+        <div id="quiz-card" style="display:none;">
+          <div class="quiz-progress" id="quiz-progress"></div>
+          <div id="quiz-question" class="quiz-question"></div>
+          <div id="quiz-answers" class="quiz-answers"></div>
+        </div>
+
+        <div id="quiz-result" style="display:none;">
+          <h3>Résultat</h3>
+          <p id="quiz-score-text" class="quiz-result-line"></p>
+          <p id="quiz-best-text" class="quiz-result-line"></p>
+          <button id="quiz-restart-btn" class="btn btn-secondary" type="button">Rejouer</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== NEWS ===================== -->
+    <section class="tab-panel" data-tab-panel="news">
+      <div class="container-lite">
+        <h2 class="panel-title">CyberShield News</h2>
+        <div class="module-news">
+          <section class="filters-section">
+            <div class="filter-controls">
+              <div class="filter-group">
+                <label for="category-filter">Filtrer par catégorie :</label>
+                <select id="category-filter" class="filter-select">
+                  <option value="all">Toutes les catégories</option>
+                  <option value="malware">Malware</option>
+                  <option value="vulnerability">Vulnérabilité</option>
+                  <option value="data-breach">Fuite de données</option>
+                  <option value="ransomware">Ransomware</option>
+                  <option value="phishing">Phishing</option>
+                  <option value="threat">Menace</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label for="search-input">Rechercher :</label>
+                <div class="search-box">
+                  <i class="fas fa-search"></i>
+                  <input type="text" id="search-input" placeholder="Titre, résumé, source...">
+                </div>
+              </div>
+
+              <button id="refresh-btn" class="btn btn-secondary" type="button">Actualiser</button>
+            </div>
+          </section>
+
+          <section class="news-section">
+            <div id="loading" class="loading-message" style="display:none;">
+              <p>Chargement des actualités...</p>
+            </div>
+
+            <div id="news-container" class="news-grid" style="display:none;"></div>
+
+            <div id="error-message" class="error-box" style="display:none;">
+              <h3>Erreur de chargement</h3>
+              <p id="error-text">Impossible de charger les actualités. Veuillez réessayer.</p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <main class="dashboard">
     <section class="card">
@@ -45,7 +318,7 @@
     <section class="card">
       <h2>Rapport de sécurité global</h2>
       <p>Générez un rapport basé sur vos analyses et activités CyberShield.</p>
-      <button id="open-report-btn" class="btn btn-primary">Générer le rapport</button>
+      <button id="open-report-btn-old" class="btn btn-primary" type="button">Générer le rapport</button>
     </section>
   </main>
 
@@ -53,8 +326,6 @@
     <p>© 2026 SecureNova – Projet CyberShield</p>
   </footer>
 
-  <!-- Ton JS global -->
-  <script src="../js/app.js"></script>
   <!-- Modal Rapport de sécurité -->
 <div id="report-modal" class="report-modal">
   <div class="report-modal-backdrop" id="report-backdrop"></div>
@@ -75,8 +346,13 @@ Aucun rapport généré pour l'instant.
   </div>
 </div>
 
-<!-- JS global -->
+<!-- JS (ordre important : état/persistance avant les modules) -->
 <script src="../js/report.js"></script>
+<script src="../js/dashboard.js"></script>
+<script src="../js/password.js"></script>
+<script src="../js/phishing.js"></script>
+<script src="../js/cipher.js"></script>
+<script src="../js/quiz.js"></script>
 <script src="../js/app.js"></script>
 
 </body>
