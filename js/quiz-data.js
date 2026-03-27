@@ -312,96 +312,112 @@ const questions = [
 
 const QUESTIONS_PER_GAME = 10;
 const TIME_PER_QUESTION = 20;
-const BASE_POINTS = 100;
-const STREAK_BONUS_FACTOR = 1.5;
 const LS_KEY_TOP5 = "cyber_quiz_top5";
 
+// état de jeu
 let gameQuestions = [];
 let currentIndex = 0;
 let score = 0;
-let streak = 0;
 let timerInterval = null;
 let timeLeft = TIME_PER_QUESTION;
 let answersDisabled = false;
-let sessionResults = [];
 
-const difficultySelect = document.getElementById("difficultySelect");
+// ===========
+// DOM (index.html)
+// ===========
+
 const startBtn = document.getElementById("startBtn");
-startBtn.addEventListener("click", () => {
-    const diff = difficultySelect.value || null;
-    startGame(diff);
-});
-const quizSection = document.getElementById("quiz");
-const questionEl = document.getElementById("question");
-const answersEl = document.getElementById("answers");
-const timerEl = document.getElementById("timer");
-const feedbackEl = document.getElementById("feedback");
-const nextBtn = document.getElementById("nextBtn");
-const resultsEl = document.getElementById("results");
+const quizStartArea = document.getElementById("quiz-start-area");
+const quizCard = document.getElementById("quiz-card");
+const quizProgressEl = document.getElementById("quiz-progress");
+const questionEl = document.getElementById("quiz-question");
+const answersEl = document.getElementById("quiz-answers");
+const quizFeedbackEl = document.getElementById("quiz-feedback");
+const quizResultEl = document.getElementById("quiz-result");
+const quizScoreText = document.getElementById("quiz-score-text");
+const quizBestText = document.getElementById("quiz-best-text");
+const restartBtn = document.getElementById("quiz-restart-btn");
+const nextBtn = document.getElementById("quiz-next-btn");
 
-// ======================
-// UTILITAIRES
-// ======================
-function shuffleArray(array) {
+// reset de dev pour virer les anciens scores foireux
+if (!window.__quizTop5ResetDone) {
+  localStorage.removeItem(LS_KEY_TOP5);
+  window.__quizTop5ResetDone = true;
+}
+
+// si le module quiz n'est pas présent sur la page, on sort sans erreur
+if (!startBtn || !quizCard) {
+  // rien à faire sur cette page
+} else {
+  // ======================
+  // UTILITAIRES
+  // ======================
+  function shuffleArray(array) {
     const arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
-}
+  }
 
-function pickRandomQuestions(allQuestions, count) {
-    const shuffled = shuffleArray(allQuestions);
+  function pickRandomQuestions(all, count) {
+    const shuffled = shuffleArray(all);
     return shuffled.slice(0, count);
-}
+  }
 
-function startTimer(onTimeout) {
+  function startTimer(onTimeout) {
     clearInterval(timerInterval);
     timeLeft = TIME_PER_QUESTION;
-    updateTimerDisplay();
+    updateProgress();
 
     timerInterval = setInterval(() => {
-        timeLeft--;
-        updateTimerDisplay();
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            onTimeout();
-        }
+      timeLeft--;
+      updateProgress();
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        onTimeout();
+      }
     }, 1000);
-}
+  }
 
-function updateTimerDisplay() {
-    timerEl.textContent = `Temps restant : ${timeLeft}s`;
-}
+  function updateProgress() {
+    const qNum = currentIndex + 1;
+    const total = gameQuestions.length;
+    quizProgressEl.textContent = `Question ${qNum}/${total} • Temps restant : ${timeLeft}s`;
+  }
 
-// ======================
-// AFFICHAGE QUESTION
-// ======================
+  // ======================
+  // AFFICHAGE QUESTION
+  // ======================
 function showQuestion() {
-    answersDisabled = false;
-    feedbackEl.innerHTML = "";
+  answersDisabled = false;
+  if (quizFeedbackEl) quizFeedbackEl.innerHTML = "";
+
+  if (nextBtn) {
     nextBtn.disabled = true;
+    nextBtn.style.display = "none"; // caché au début
+  }
 
-    const q = gameQuestions[currentIndex];
-    questionEl.textContent = `${currentIndex + 1}/${gameQuestions.length} - ${q.question}`;
+  const q = gameQuestions[currentIndex];
+  questionEl.textContent = q.question;
 
-    answersEl.innerHTML = "";
-    q.answers.forEach((answer, idx) => {
-        const btn = document.createElement("button");
-        btn.textContent = answer;
-        btn.className = "answer-btn";
-        btn.addEventListener("click", () => handleAnswer(idx));
-        answersEl.appendChild(btn);
-    });
+  answersEl.innerHTML = "";
+  q.answers.forEach((answer, idx) => {
+    const btn = document.createElement("button");
+    btn.textContent = answer;
+    btn.className = "quiz-answer-btn";
+    btn.addEventListener("click", () => handleAnswer(idx));
+    answersEl.appendChild(btn);
+  });
 
-    startTimer(() => handleAnswer(null, true));
+  startTimer(() => handleAnswer(null, true));
 }
 
-// ======================
-// GESTION RÉPONSE
-// ======================
-function handleAnswer(selectedIndex, isTimeout = false) {
+  // ======================
+  // GESTION RÉPONSE
+  // ======================
+  function handleAnswer(selectedIndex, isTimeout = false) {
     if (answersDisabled) return;
     answersDisabled = true;
     clearInterval(timerInterval);
@@ -409,194 +425,122 @@ function handleAnswer(selectedIndex, isTimeout = false) {
     const q = gameQuestions[currentIndex];
     const buttons = Array.from(answersEl.querySelectorAll("button"));
 
-    let isCorrect = selectedIndex === q.correctIndex;
+    const isCorrect = selectedIndex === q.correctIndex;
 
     buttons.forEach((btn, idx) => {
-        if (idx === q.correctIndex) {
-            btn.style.backgroundColor = "#2ecc71";
-        } else if (idx === selectedIndex && idx !== q.correctIndex) {
-            btn.style.backgroundColor = "#e74c3c";
-        }
-        btn.disabled = true;
+      if (idx === q.correctIndex) {
+        btn.classList.add("quiz-correct");
+      } else if (idx === selectedIndex && idx !== q.correctIndex) {
+        btn.classList.add("quiz-wrong");
+      }
+      btn.disabled = true;
     });
 
-    if (isCorrect) {
-        streak++;          
-        score += 1;        
-    } else {
-        streak = 0;
-    }
+    if (isCorrect) score++;
 
-    q.wasCorrect = isCorrect;
-
-    const explanation = q.explanation || "Ce choix reflète la bonne pratique recommandée dans les politiques de sécurité de l’entreprise.";
-    const baseMsg = isCorrect
+    if (quizFeedbackEl) {
+      const baseMsg = isCorrect
         ? "Bonne réponse !"
-        : (isTimeout ? "Temps écoulé." : "Mauvaise réponse.");
-
-    feedbackEl.innerHTML = `
+        : isTimeout
+        ? "Temps écoulé."
+        : "Mauvaise réponse.";
+      const explanation =
+        q.explanation ||
+        "Ce choix reflète la bonne pratique recommandée dans les politiques de sécurité de l’entreprise.";
+      quizFeedbackEl.innerHTML = `
         <p>${baseMsg}</p>
-        <p>La bonne réponse était "${q.answers[q.correctIndex]}"</p>
+        <p>La bonne réponse était : "<strong>${q.answers[q.correctIndex]}</strong>"</p>
         <p>${explanation}</p>
-        <p>Score actuel : ${score} / ${gameQuestions.length}</p>
-        <p>Streak : ${streak}</p>
-    `;
-
-    nextBtn.disabled = false;
-}
-
-// ======================
-// FIN DE PARTIE
-// ======================
-function computeCategoryStats() {
-    const stats = {};
-    gameQuestions.forEach(q => {
-        if (!q.category) return;
-        if (!stats[q.category]) {
-            stats[q.category] = { total: 0, wrong: 0 };
-        }
-        stats[q.category].total++;
-        if (q.wasCorrect === false) {
-            stats[q.category].wrong++;
-        }
-    });
-    return stats;
-}
-
-function buildRecommendations(categoryStats) {
-    if (!categoryStats || Object.keys(categoryStats).length === 0) {
-        return "<li>Poursuis les bonnes pratiques, tu es sur la bonne voie.</li>";
+      `;
     }
 
-    const items = [];
-    for (const [cat, { wrong }] of Object.entries(categoryStats)) {
-        if (wrong === 0) continue;
-        let label;
-        switch (cat) {
-            case "phishing":
-                label = "Renforcer la vigilance face aux emails, SMS et liens suspects (phishing).";
-                break;
-            case "password":
-                label = "Revoir les bonnes pratiques de mots de passe et d’authentification (MFA).";
-                break;
-            case "wifi":
-                label = "Se former sur l’usage sécurisé du Wi-Fi public et du VPN.";
-                break;
-            case "devices":
-                label = "Améliorer la gestion sécurisée des postes, écrans et déplacements.";
-                break;
-            case "data":
-                label = "Revoir les règles de protection et de partage des données sensibles.";
-                break;
-            case "incident":
-                label = "Mieux connaître la procédure de réaction en cas d’incident de sécurité.";
-                break;
-            case "physical":
-                label = "Renforcer les réflexes de sécurité physique (badge, visiteurs, portes).";
-                break;
-            case "culture":
-                label = "Approfondir la culture cybersécurité et les responsabilités de chacun.";
-                break;
-            default:
-                label = `Approfondir les bonnes pratiques sur le thème : ${cat}.`;
-        }
-        items.push(`<li>${label}</li>`);
+    if (nextBtn) {
+      nextBtn.disabled = false;
+      nextBtn.style.display = "block";
     }
+  }
 
-    if (items.length === 0) {
-        return "<li>Poursuis les bonnes pratiques, tu es sur la bonne voie.</li>";
-    }
-    return items.join("");
-}
-
-// ======================
-// LOCALSTORAGE TOP 5
-// ======================
-function getTop5ScoresFromStorage() {
+  // ======================
+  // LOCALSTORAGE TOP 5
+  // ======================
+  function getTop5ScoresFromStorage() {
     const raw = localStorage.getItem(LS_KEY_TOP5);
     if (!raw) return [];
     try {
-        const arr = JSON.parse(raw);
-        return Array.isArray(arr) ? arr : [];
+      const arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return [];
+      return arr
+        .map((v) => Number(v))
+        .filter((v) => Number.isFinite(v) && v >= 0 && v <= 100);
     } catch {
-        return [];
+      return [];
     }
-}
+  }
 
-function saveTop5Scores(scores) {
+  function saveTop5Scores(scores) {
     localStorage.setItem(LS_KEY_TOP5, JSON.stringify(scores));
-}
+  }
 
-function updateTop5(currentTop5, newScore) {
+  function updateTop5(currentTop5, newScore) {
     const all = [...currentTop5, newScore].sort((a, b) => b - a);
     return all.slice(0, 5);
-}
+  }
 
-function endGame() {
-    questionEl.textContent = "";
-    answersEl.innerHTML = "";
-    timerEl.textContent = "";
-    feedbackEl.textContent = "";
-    nextBtn.style.display = "none";
-    quizSection.style.display = "none";
+  // ======================
+  // FIN DE PARTIE
+  // ======================
+  function endGame() {
+    quizCard.style.display = "none";
+    quizResultEl.style.display = "block";
+    quizStartArea.style.display = "block";
 
-    sessionResults.push(score);
-    const sortedSession = [...sessionResults].sort((a, b) => b - a);
-    const rank = sortedSession.indexOf(score) + 1;
-
-    const categoryStats = computeCategoryStats();
-    const recommendations = buildRecommendations(categoryStats);
+    const percent = Math.round((score / gameQuestions.length) * 100);
+    quizScoreText.textContent = `Score : ${score}/${gameQuestions.length} (${percent}%)`;
 
     const top5 = getTop5ScoresFromStorage();
-    const updatedTop5 = updateTop5(top5, score);
+    const updatedTop5 = updateTop5(top5, percent);
     saveTop5Scores(updatedTop5);
 
-    const top5Html = updatedTop5
-        .map(s => `<li>${s} pts</li>`)
-        .join("");
+    const best = updatedTop5.length ? updatedTop5[0] : percent;
+    quizBestText.textContent = `Meilleur score (ce navigateur) : ${best}%`;
+  }
 
-    resultsEl.innerHTML = `
-        <h2>Résultats</h2>
-        <p>Score final : <strong>${score}</strong>/10</p>
-        <h3>Top 5 des scores (ce navigateur)</h3>
-        <ol>${top5Html}</ol>
-        <h3>Recommandations personnalisées</h3>
-        <ul>${recommendations}</ul>
-    `;
-    resultsEl.style.display = "block";
-}
-
-// ======================
-// DÉROULEMENT
-// ======================
-nextBtn.addEventListener("click", () => {
-    currentIndex++;
-    if (currentIndex >= gameQuestions.length) {
-        endGame();
-    } else {
-        showQuestion();
-    }
-});
-
-function startGame(selectedDifficulty = null) {
+  // ======================
+  // DÉROULEMENT
+  // ======================
+  function startGame() {
     score = 0;
-    streak = 0;
     currentIndex = 0;
-    sessionResults = [];
-    nextBtn.style.display = "inline-block";
-    resultsEl.style.display = "none";
-    quizSection.style.display = "block";
 
-    let pool = questions;
-    if (selectedDifficulty) {
-        pool = questions.filter(q => q.difficulty === selectedDifficulty);
-    }
+    gameQuestions = pickRandomQuestions(questions, QUESTIONS_PER_GAME);
 
-    gameQuestions = pickRandomQuestions(pool, QUESTIONS_PER_GAME);
+    quizStartArea.style.display = "none";
+    quizResultEl.style.display = "none";
+    quizCard.style.display = "block";
+
     showQuestion();
-}
+  }
 
-startBtn.addEventListener("click", () => {
-    const diff = difficultySelect.value || null;
-    startGame(diff);
-});
+  window.startGame = startGame;
+
+  startBtn.addEventListener("click", () => {
+    startGame();
+  });
+
+  restartBtn.addEventListener("click", () => {
+    startGame();
+  });
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+        nextBtn.disabled = true;
+        nextBtn.style.display = "none"; // on le recache tout de suite au clic
+        currentIndex++;
+        if (currentIndex >= gameQuestions.length) {
+        endGame();
+        } else {
+        showQuestion();
+        }
+    });
+    }
+}

@@ -111,7 +111,7 @@
             <textarea id="email-body" rows="6" placeholder="Texte de l'email..."></textarea>
           </label>
 
-          <button id="analyze-email-btn" class="btn" type="button">Analyser l'email</button>
+          <button id="analyze-email-btn" class="btn btn-primary" type="button">Analyser l'email</button>
         </section>
 
         <section class="card">
@@ -216,7 +216,7 @@
         <p class="help-text">Répondez aux questions pour évaluer vos connaissances en sécurité opérationnelle.</p>
 
         <div id="quiz-start-area">
-          <button id="quiz-start-btn" class="btn btn-primary" type="button">Démarrer le quiz</button>
+          <button id="startBtn" class="btn btn-primary" type="button">Démarrer le quiz</button>
           <div class="quiz-hint" id="quiz-hint">Le score est stocké localement (aucune donnée envoyée).</div>
         </div>
 
@@ -224,6 +224,10 @@
           <div class="quiz-progress" id="quiz-progress"></div>
           <div id="quiz-question" class="quiz-question"></div>
           <div id="quiz-answers" class="quiz-answers"></div>
+          <div id="quiz-feedback" class="quiz-feedback"></div>
+          <button id="quiz-next-btn" class="btn btn-secondary" type="button" disabled>
+            Question suivante
+          </button>
         </div>
 
         <div id="quiz-result" style="display:none;">
@@ -288,31 +292,31 @@
     <section class="card">
       <h2>Analyseur de mot de passe</h2>
       <p>Testez la robustesse de vos mots de passe en temps réel.</p>
-      <a href="password.html" class="btn">Accéder au module</a>
+      <a href="password.html" class="btn btn-primary">Accéder au module</a>
     </section>
 
     <section class="card">
       <h2>Chiffrement de messages</h2>
       <p>Chiffrez et déchiffrez des messages avec le chiffrement de César.</p>
-      <a href="cipher.html" class="btn">Accéder au module</a>
+      <a href="cipher.html" class="btn btn-primary">Accéder au module</a>
     </section>
 
     <section class="card">
       <h2>Détecteur de phishing</h2>
       <p>Analysez des e‑mails et détectez les signaux de phishing.</p>
-      <a href="phishing.html" class="btn">Accéder au module</a>
+      <a href="phishing.html" class="btn btn-primary">Accéder au module</a>
     </section>
 
     <section class="card">
       <h2>CyberShield News</h2>
       <p>Consultez les dernières actualités et alertes de sécurité.</p>
-      <a href="dashboard.html" class="btn">Accéder au module</a>
+      <a href="dashboard.html" class="btn btn-primary">Accéder au module</a>
     </section>
 
     <section class="card">
       <h2>Quiz de sensibilisation</h2>
       <p>Évaluez vos connaissances grâce à un quiz interactif.</p>
-      <a href="quiz.html" class="btn">Accéder au module</a>
+      <a href="quiz.html" class="btn btn-primary">Accéder au module</a>
     </section>
 
     <section class="card">
@@ -352,7 +356,7 @@ Aucun rapport généré pour l'instant.
 <script src="../js/password.js"></script>
 <script src="../js/phishing.js"></script>
 <script src="../js/cipher.js"></script>
-<script src="../js/quiz.js"></script>
+<script src="../js/quiz-data.js"></script>
 <script src="../js/app.js"></script>
 
 </body>

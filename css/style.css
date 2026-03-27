@@ -1768,3 +1768,6 @@ footer {
   margin-top: 8px;
   font-weight: 800;
 }
+
+.quiz-correct { background-color: #2ecc71; color: #fff; }
+.quiz-wrong   { background-color: #e74c3c; color: #fff; }
