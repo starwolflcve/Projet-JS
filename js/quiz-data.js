@@ -503,6 +503,13 @@ function showQuestion() {
 
     const best = updatedTop5.length ? updatedTop5[0] : percent;
     quizBestText.textContent = `Meilleur score (ce navigateur) : ${best}%`;
+
+    // Mettre à jour les statistiques globales pour le dashboard
+    if (typeof updateQuizReport === "function") {
+      updateQuizReport(percent);
+      // Notifier le dashboard que l'état a changé
+      window.dispatchEvent(new CustomEvent("cybershield:stateUpdated"));
+    }
   }
 
   // ======================

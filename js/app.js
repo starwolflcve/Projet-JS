@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Quiz (moyenne persistée)
     if (state?.quizStats && state.quizStats.attempts > 0 && typeof state.quizStats.totalScore === "number") {
       const avg = state.quizStats.totalScore / state.quizStats.attempts; // 0..100
-      setText(quizAverageEl, `${Math.round(avg)}/100`);
+      setText(quizAverageEl, `${Math.round(avg / 10)}/10`);
       setText(quizSubEl, `Moyenne sur ${state.quizStats.attempts} tentative(s)`);
     } else {
       setText(quizAverageEl, "—");
@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Mise à jour live si modules mettent à jour l'état.
   window.addEventListener("cybershield:stateUpdated", () => {
-    if (activeTab === "home") renderHome();
+    renderHome(); // Toujours mettre à jour l'affichage du home, même si pas actif
   });
 
   // Les news sont chargées par dashboard.js et stockées en cache localStorage.

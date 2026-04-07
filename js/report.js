@@ -1,13 +1,51 @@
 // Données globales utilisées par tous les modules pour le rapport
-const cyberReportData = {
-    lastPasswordAnalysis: null,   // { score, entropy, strength, date }
-    phishingStats: {              // { totalAnalyzed, highRiskCount }
-      totalAnalyzed: 0,
-      highRiskCount: 0
-    },
-    quizStats: null,              // { lastScore, bestScore, attempts } – à remplir plus tard
-    lastUpdated: null
-  };
+const LS_KEY_REPORT = "cybershield_report";
+
+let cyberReportData = loadReportData();
+
+function loadReportData() {
+  try {
+    const raw = localStorage.getItem(LS_KEY_REPORT);
+    if (!raw) return {
+      lastPasswordAnalysis: null,
+      phishingStats: { totalAnalyzed: 0, highRiskCount: 0 },
+      quizStats: null,
+      lastUpdated: null
+    };
+    const parsed = JSON.parse(raw);
+    // Validation basique
+    if (typeof parsed !== "object" || parsed === null) {
+      return {
+        lastPasswordAnalysis: null,
+        phishingStats: { totalAnalyzed: 0, highRiskCount: 0 },
+        quizStats: null,
+        lastUpdated: null
+      };
+    }
+    return {
+      lastPasswordAnalysis: parsed.lastPasswordAnalysis || null,
+      phishingStats: parsed.phishingStats || { totalAnalyzed: 0, highRiskCount: 0 },
+      quizStats: parsed.quizStats || null,
+      lastUpdated: parsed.lastUpdated || null
+    };
+  } catch (error) {
+    console.warn("Erreur lors du chargement des données de rapport:", error);
+    return {
+      lastPasswordAnalysis: null,
+      phishingStats: { totalAnalyzed: 0, highRiskCount: 0 },
+      quizStats: null,
+      lastUpdated: null
+    };
+  }
+}
+
+function saveReportData() {
+  try {
+    localStorage.setItem(LS_KEY_REPORT, JSON.stringify(cyberReportData));
+  } catch (error) {
+    console.warn("Erreur lors de la sauvegarde des données de rapport:", error);
+  }
+}
   
   // --- Fonctions utilitaires pour mettre à jour les données ---
   
@@ -21,6 +59,7 @@ const cyberReportData = {
       date: new Date().toISOString()
     };
     cyberReportData.lastUpdated = new Date().toISOString();
+    saveReportData();
   }
   
   // À appeler depuis ton module phishing (testPhishing) après analyzeEmail
@@ -31,18 +70,22 @@ const cyberReportData = {
       cyberReportData.phishingStats.highRiskCount += 1;
     }
     cyberReportData.lastUpdated = new Date().toISOString();
+    saveReportData();
   }
   
   // À appeler plus tard depuis le quiz
-  // stats exemple : { lastScore: 70, bestScore: 90, attempts: 4 }
-  function updateQuizReport(stats) {
-    cyberReportData.quizStats = {
-      lastScore: stats.lastScore,
-      bestScore: stats.bestScore,
-      attempts: stats.attempts,
-      date: new Date().toISOString()
-    };
+  // score attendu : le score en pourcentage (0-100) de cette tentative
+  function updateQuizReport(score) {
+    if (!cyberReportData.quizStats) {
+      cyberReportData.quizStats = {
+        totalScore: 0,
+        attempts: 0
+      };
+    }
+    cyberReportData.quizStats.totalScore += score;
+    cyberReportData.quizStats.attempts += 1;
     cyberReportData.lastUpdated = new Date().toISOString();
+    saveReportData();
   }
   
   // --- Génération du texte de rapport lisible ---
@@ -55,7 +98,7 @@ const cyberReportData = {
     if (data.lastPasswordAnalysis) {
       const p = data.lastPasswordAnalysis;
       passwordPart =
-        `Dernier mot de passe testé : score ${p.score}/100 (${p.strength}), ` +
+        `Dernier mot de passe testé : score ${p.score}/10 (${p.strength}), ` +
         `entropie ${p.entropy} bits.\n` +
         `Analyse réalisée le ${new Date(p.date).toLocaleString("fr-FR")}.`;
     }
