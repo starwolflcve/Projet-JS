@@ -1,16 +1,54 @@
-- CyberShield est une application web en JavaScript qui permet de tester son niveau de sécurité numérique (mots de passe, phishing, quiz) via une interface interactive.
+# CyberShield
 
-- Installation & Lancement:
-Cloner notre repo, puis ouvrir le fichier index.html dans n'importe quel navigateur pour accéder à l'interface unifiée.
+CyberShield est une application web statique en JavaScript qui permet de tester ton niveau de sécurité numérique avec plusieurs modules : mot de passe, phishing, chiffrement, quiz et dashboard.
 
-- Fonctionnalités:
-Analyseur de robustesse de mot de passe , modules de chiffrement César et Vigenère , détecteur d'e-mails de phishing , dashboard de veille via API et quiz de sensibilisation avec timer. Un générateur de rapport personnalisé exportable complète l'outil.
+## Lancer l'application
 
-- Limites:
-Design simple. Pas de système de création de compte ni d'algorithme de préférence. Collaboration limitée à Git et stockage local uniquement.
+### Option 1 — ouvrir directement
+1. Ouvre ton explorateur de fichiers.
+2. Va dans le dossier `Projet-JS/templates`.
+3. Double-clique sur `index.html`.
+4. Le navigateur ouvrira l'application.
 
-- Améliorations possibles:
-Refonte graphique avec responsive design. Ajout d'un système multilingue, amélioration de l'accessibilité, mise en place d'une newsletter et intégration d'une vue carte pour la veille.
+### Option 2 — utiliser un serveur local (recommandé)
+Cela évite les problèmes d'accès aux fichiers locaux pour certains navigateurs.
 
-- Équipe Dört Koruma:
-Quentin Lacave – Bianca Pons – Ummeyir Colak - Clément Hayot
+1. Ouvre un terminal.
+2. Va dans le dossier du projet :
+   ```bash
+   cd /Users/quentinlacave/Documents/Projet-JS
+   ```
+3. Démarre un serveur local :
+   ```bash
+   python3 -m http.server 8000
+   ```
+4. Ouvre dans ton navigateur :
+   ```text
+   http://localhost:8000/templates/index.html
+   ```
+
+> Si ta machine n'a pas `python3`, tu peux utiliser `python -m http.server 8000`.
+
+### Option 3 — avec VS Code Live Server
+1. Installe l’extension **Live Server**.
+2. Ouvre `templates/index.html`.
+3. Clique sur `Go Live`.
+
+## Fonctionnalités
+- Analyseur de robustesse de mot de passe
+- Modules de chiffrement César et Vigenère
+- Détecteur de phishing
+- Quiz de sensibilisation avec timer
+- Dashboard de veille via API
+- Générateur de rapport exportable
+
+## Limites
+- Application statique sans back-end
+- Pas de système d’authentification
+- Stockage local et données de session uniquement
+
+## Équipe Dört Koruma
+- Quentin Lacave
+- Bianca Pons
+- Ummeyir Colak
+- Clément Hayot
